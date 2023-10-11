@@ -1,19 +1,31 @@
 package com.example.backend.service;
 
+import com.example.backend.hash.Hashing;
 import com.example.backend.model.User;
+import com.example.backend.repository.UserRepo;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 
 //Tại sao lại phải implement interface: Có thể thay đổi cái implementation nhưng interface giữ nguyên
 //Trong một hệ thống, chúng ta phải có rất nhiều QUY CHUẨN, còn thực hiện quy chuẩn thế nào có thể tùy biến được
 // ==> Giúp chúng ta linh động, dễ dàng switching giữa việc thực hiện các quy chuẩn
 @Service
+@AllArgsConstructor
 public class UserServiceInMemory implements UserService{
-
+    private UserRepo userRepo;
+    private Hashing hashing;
     @Override
-    public User login(String email, String password) {
-        return null;
+    public User login(String email, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        //Trả về null nếu tìm thấy user và validate password thành công
+        Optional<User> o_user = userRepo.findByEmail(email);
+        if(!o_user.isPresent()){
+            return null;
+        }
+        return (hashing.validatePassword(password, o_user.get().getHashed_password())) ? o_user.get() : null;
     }
 
     @Override
@@ -22,8 +34,8 @@ public class UserServiceInMemory implements UserService{
     }
 
     @Override
-    public User addUser(String fullname, String email, String password) {
-        return null;
+    public User addUser(String fullname, String email, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        return userRepo.addUser(fullname,email,hashing.hashPassword(password));
     }
 
     @Override
