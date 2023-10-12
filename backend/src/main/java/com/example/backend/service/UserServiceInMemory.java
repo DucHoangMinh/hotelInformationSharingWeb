@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.exception.UserException;
 import com.example.backend.hash.Hashing;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepo;
@@ -19,13 +20,14 @@ public class UserServiceInMemory implements UserService{
     private UserRepo userRepo;
     private Hashing hashing;
     @Override
-    public User login(String email, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        //Trả về null nếu tìm thấy user và validate password thành công
+    public User login(String email, String password) throws Exception {
+        //Trả về các mã lỗi nếu không tìm thấy user và trả về user khi validate password thành công
         Optional<User> o_user = userRepo.findByEmail(email);
         if(!o_user.isPresent()){
-            return null;
+            throw new UserException("User is not found!");
         }
-        return (hashing.validatePassword(password, o_user.get().getHashed_password())) ? o_user.get() : null;
+        if(hashing.validatePassword(password, o_user.get().getHashed_password())) return o_user.get();
+        else throw new Exception("Password is incorrect!");
     }
 
     @Override

@@ -7,7 +7,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 
 public interface UserService {
-    public User login(String email, String password) throws NoSuchAlgorithmException, InvalidKeySpecException;
+    public User login(String email, String password) throws Exception;
     public boolean logout(String email);
 
     public User addUser(String fullname, String email, String password) throws NoSuchAlgorithmException, InvalidKeySpecException;
