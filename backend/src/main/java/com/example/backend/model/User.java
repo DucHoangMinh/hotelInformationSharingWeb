@@ -1,16 +1,30 @@
 package com.example.backend.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+
 @Data
-@AllArgsConstructor
 @Builder //Dùng để tạo một đối tượng theo khuôn mẫu có sẵn.
+@Entity
+@AllArgsConstructor
+@Table(name = "user")
 public class User {
-    private String id;
+    @Id
+    @GeneratedValue
+    private Long id;
+
     private String fullname;
     private String email;
-    private String hashed_password;
+    private String password;
     private String role;
+
+    public User() {
+
+    }
 }
