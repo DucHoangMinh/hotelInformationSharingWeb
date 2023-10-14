@@ -38,9 +38,12 @@ public class LoginController {
         String jwt = jwTtokenProvider.generateToken((CustomUserDetail) authentication.getPrincipal());
         return new LoginResponse(jwt);
     }
-    @GetMapping("/test")
+    @GetMapping("/test-no-token")
     public String randomStuff(){
-        return ("JWT Hợp lệ mới có thể thấy được message này");
+        return ("Không cần token cũng có thể thấy được message này");
     }
-
+    @GetMapping("/test-token")
+    public String testtoken(){
+        return ("Phải cần token cũng có thể thấy được message này");
+    }
 }
