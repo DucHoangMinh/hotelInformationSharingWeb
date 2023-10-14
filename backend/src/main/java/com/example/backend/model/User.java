@@ -9,6 +9,7 @@ import lombok.Data;
 @Builder //Dùng để tạo một đối tượng theo khuôn mẫu có sẵn.
 public class User {
     private String id;
+    private String fullname;
     private String email;
     private String hashed_password;
     private String role;

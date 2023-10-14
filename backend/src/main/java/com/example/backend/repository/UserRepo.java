@@ -1,6 +1,8 @@
 package com.example.backend.repository;
 
 import com.example.backend.model.User;
+import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -8,7 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-public class UserRepo {
+public interface UserRepo extends JpaRepository {
 
 //    Dùng để lưu trữ thông tin về người dùng một cách an toàn, do Spring Boot hỗ trợ.
     private ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
