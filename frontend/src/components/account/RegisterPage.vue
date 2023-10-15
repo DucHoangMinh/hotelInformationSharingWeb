@@ -14,6 +14,12 @@
     input(type="radio" value="true" name="sex" v-model="registerRequest.sex" )
     p Nữ
     input(type="radio" value="false" name="sex" v-model="registerRequest.sex" )
+  .role-select.d-flex.justify-space-between
+    v-label Đăng ký với tư cách là
+    p Chủ phòng nghỉ
+    input(type="radio" value="ROLE_HOST" name="role" v-model="registerRequest.role" )
+    p Người tìm kiếm
+    input(type="radio" value="ROLE_CLIENT" name="role" v-model="registerRequest.role" )
   v-label() Số điện thoại
   v-text-field(v-model="registerRequest.phone" type="number" density="compact" variant="outlined" )
   v-label Mật khẩu
@@ -30,6 +36,8 @@
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import {ref} from "vue";
+import mixin from "@/services/mixin";
+import api from "@/services/api";
 
 export default {
   name:"RegisterPage",
@@ -43,7 +51,8 @@ export default {
       dob: '',
       sex: true,
       phone: 0,
-      password: ''
+      password: '',
+      role: ''
     })
     const validateEmailValue = ref(true);
     const invalidMessage = ref({
@@ -55,8 +64,10 @@ export default {
       let email = registerRequest.value.email.toLowerCase()
       validateEmailValue.value = email.match( /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/)
     }
-    const handleClickRegister = async () => {
-      console.log(registerRequest.value)
+    async function handleClickRegister(){
+      registerRequest.value.dob = mixin.formatDateToYYYYMMDD(registerRequest.value.dob);
+      const registerResponse = await api.post('register', registerRequest.value)
+      console.log(registerResponse);
     }
     return {
       registerRequest,

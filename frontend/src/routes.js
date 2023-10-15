@@ -1,9 +1,13 @@
 import LoginPage from "@/components/account/LoginPage.vue";
-import HomePage from "@/components/WelcomePage.vue";
+import WelcomPage from "@/components/WelcomePage.vue";
+import HomePage from "@/views/HomePage.vue";
 import RegisterPage from "@/components/account/RegisterPage.vue";
+import NotPermitted from "@/components/NotPermitted.vue";
 import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
-    {path: '/', component: HomePage},
+    {path: '/', component: WelcomPage},
+    {path: '/notpermitted', component: NotPermitted},
+    {path: '/home', component: HomePage},
     {path: '/login', component: LoginPage},
     {path: '/register', component: RegisterPage},
 ];

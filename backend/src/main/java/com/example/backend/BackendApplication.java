@@ -9,23 +9,23 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-public class BackendApplication implements CommandLineRunner {
+public class BackendApplication{
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackendApplication.class, args);
 	}
-	@Autowired
-	UserRepository userRepository;
-	@Autowired
-	PasswordEncoder passwordEncoder;
-	@Override
-	public void run(String... args) throws Exception {
-		// Khi chương trình chạy
-		// Insert vào csdl một user.
-		User user = new User();
-		user.setEmail("hoangminhduc4125@gmail.com");
-		user.setPassword(passwordEncoder.encode("loda"));
-		userRepository.save(user);
-		System.out.println(user);
-	}
+//	@Autowired
+//	UserRepository userRepository;
+//	@Autowired
+//	PasswordEncoder passwordEncoder;
+//	@Override
+//	public void run(String... args) throws Exception {
+//		// Khi chương trình chạy
+//		// Insert vào csdl một user.
+//		User user = new User();
+//		user.setEmail("hoangminhduc4125@gmail.com");
+//		user.setPassword(passwordEncoder.encode("loda"));
+//		userRepository.save(user);
+//		System.out.println(user);
+//	}
 }

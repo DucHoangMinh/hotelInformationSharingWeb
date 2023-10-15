@@ -31,11 +31,5 @@ public class UserService implements UserDetailsService {
 
         User user = userOptional.get();
         return new CustomUserDetail(user);
-        // Thay thế UserDetails(user) bằng UserDetails đúng cách
-//        UserDetails userDetails = org.springframework.security.core.userdetails.User
-//                .withUsername(user.getFullname())
-//                .authorities("ROLE_USER") // Thay thế bằng danh sách vai trò thích hợp của người dùng
-//                .build();
-//        return userDetails;
     }
 }

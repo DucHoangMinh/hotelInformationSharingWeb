@@ -8,12 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.sql.Date;
+
 
 @Data
 @Builder //Dùng để tạo một đối tượng theo khuôn mẫu có sẵn.
 @Entity
 @AllArgsConstructor
-@Table(name = "user")
+@Table(name = "user") 
 public class User {
     @Id
     @GeneratedValue
@@ -22,6 +24,9 @@ public class User {
     private String email;
     private String password;
     private String role;
+    private Date dob;
+    private Long phone;
+    private boolean sex;
     public User() {
 
     }
