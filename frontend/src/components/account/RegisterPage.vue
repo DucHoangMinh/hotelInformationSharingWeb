@@ -21,9 +21,11 @@
     p Người tìm kiếm
     input(type="radio" value="ROLE_CLIENT" name="role" v-model="registerRequest.role" )
   v-label() Số điện thoại
-  v-text-field(v-model="registerRequest.phone" type="number" density="compact" variant="outlined" )
+  v-text-field(v-model="registerRequest.phone" type="number" density="compact" variant="outlined" @input="validatePhone()")
+  v-label.invalid-message(v-if="!validatePhoneValue") {{invalidMessage.phoneNotNull}}
   v-label Mật khẩu
   v-text-field(v-model="registerRequest.password" type="password" density="compact" variant="outlined")
+  v-label.invalid-message(v-if="!validatePasswordValue") {{invalidMessage.passwordNotValid}}
   v-label Nhập lại mật khẩu
   v-text-field(v-model="rePassword" type="password" density="compact" variant="outlined")
   v-label.invalid-message(v-if="registerRequest.password !== rePassword" ) {{invalidMessage.passwordNotMatch}}
@@ -38,6 +40,7 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import {ref} from "vue";
 import mixin from "@/services/mixin";
 import api from "@/services/api";
+import store from "@/store";
 
 export default {
   name:"RegisterPage",
@@ -52,21 +55,50 @@ export default {
       sex: true,
       phone: 0,
       password: '',
-      role: ''
+      role: 'ROLE_CLIENT'
     })
     const validateEmailValue = ref(true);
+    const validatePhoneValue = ref(true)
+    const validatePasswordValue = ref(true)
     const invalidMessage = ref({
       passwordNotMatch: 'Mật khẩu không trùng khớp',
-      emailNotValid: 'Vui lòng nhập một email hợp lệ'
+      emailNotValid: 'Vui lòng nhập một email hợp lệ',
+      phoneNotNull: 'Số điện thoại không hợp lệ hoặc còn thiếu',
+      passwordNotValid: 'Mật khẩu phải có 8 ký tự, bao gồm ít nhất 1 chữ cái và 1 số'
     })
     const rePassword = ref('')
     function validateEmail(){
       let email = registerRequest.value.email.toLowerCase()
       validateEmailValue.value = email.match( /^[a-z0-9]+@[a-z]+\.[a-z]{2,3}$/)
     }
+    function validatePhone(){
+      let phone = registerRequest.value.phone
+      validatePhoneValue.value = phone.match(/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/)
+    }
+    function validatePassword(){
+      let password = registerRequest.value.password
+      validatePasswordValue.value = password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"/)
+    }
     async function handleClickRegister(){
       registerRequest.value.dob = mixin.formatDateToYYYYMMDD(registerRequest.value.dob);
       const registerResponse = await api.post('register', registerRequest.value)
+      if(registerResponse.status === 'ok'){
+        store.dispatch('showSnack', {
+          message: 'Đăng ký thành công, bạn sẽ được chuyển về trang đăng nhập sau 5 giây',
+          color: "blue",
+          timeout: 5000
+        })
+        setTimeout(() => {
+          location.href = "/login"
+        }, 5000)
+      }
+      else {
+        store.dispatch('showSnack', {
+          message: registerResponse.message,
+          color: "red",
+          timeout: 5000
+        })
+      }
       console.log(registerResponse);
     }
     return {
@@ -75,7 +107,11 @@ export default {
       handleClickRegister,
       invalidMessage,
       validateEmail,
-      validateEmailValue
+      validatePhone,
+      validatePassword,
+      validateEmailValue,
+      validatePhoneValue,
+      validatePasswordValue
     }
   }
 }

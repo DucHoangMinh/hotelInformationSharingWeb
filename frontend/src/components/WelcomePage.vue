@@ -11,9 +11,21 @@
 </template>
 
 <script>
+import storage from "@/services/storage";
+import {onMounted} from "vue";
+
 export default {
   name: 'HelloWorld',
   setup(){
+    const checkLoginOrNot = () => {
+      let token = storage.getItem("accesstoken");
+      if(token){
+        location.href = "/home";
+      }
+    }
+    onMounted(
+        checkLoginOrNot
+    )
   }
 }
 </script>

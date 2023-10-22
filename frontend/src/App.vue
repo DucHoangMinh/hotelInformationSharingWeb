@@ -1,11 +1,20 @@
 <template>
-  <router-view></router-view>
+  <v-app>
+    <SnackBar></SnackBar>
+    <router-view></router-view>
+  </v-app>
 </template>
 
 <script>
+import {mapState} from "vuex";
+import SnackBar from "@/utils/SnackBar.vue";
 
 export default {
   name: 'App',
+  components: {SnackBar},
+  computed: {
+    ...mapState(["snackbar"])
+  }
 }
 </script>
 

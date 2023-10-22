@@ -1,6 +1,7 @@
 <script>
 import {ref} from "vue";
-
+import store from "@/store";
+import auth from "@/services/auth";
 export default {
   name: "LoginPage",
   setup(){
@@ -8,9 +9,24 @@ export default {
       email: "",
       password: ""
     })
-
-    function handleLogin(){
-      alert(loginRequest.value)
+    async function handleLogin(){
+      if(loginRequest.value.email === "" || loginRequest.value.password === ""){
+        store.dispatch('showSnack', {
+          message: 'Vui lòng nhập đầy đủ email và mật khẩu',
+          color: "red",
+          timeout: 5000
+        })
+      }
+      else {
+        let loginResult = await auth.login(loginRequest.value);
+        if(!loginResult){
+          store.dispatch('showSnack', {
+            message: 'Vui lòng kiểm tra lại thông tin tài khoản và mật khẩu',
+            color: "red",
+            timeout: 5000
+          })
+        }
+      }
     }
     return {
       loginRequest,

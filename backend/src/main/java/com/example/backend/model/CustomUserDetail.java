@@ -2,6 +2,8 @@ package com.example.backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +13,7 @@ import java.util.Collections;
 
 @Data
 @AllArgsConstructor
+@Getter
 public class CustomUserDetail implements UserDetails {
     User user;
 

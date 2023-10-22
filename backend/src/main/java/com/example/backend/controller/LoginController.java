@@ -1,5 +1,7 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.UserDTO;
+import com.example.backend.mapper.UserMapper;
 import com.example.backend.model.CustomUserDetail;
 import com.example.backend.model.ResponseModel;
 import com.example.backend.model.User;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 public class LoginController {
@@ -32,37 +34,57 @@ public class LoginController {
     JWTtokenProvider jwTtokenProvider;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    UserMapper userMapper;
 
-    @GetMapping("/test")
+    @GetMapping("/check")
     public String returnTest(){
+        System.out.println("Receive check request");
         return "testApiSuccessfully";
     }
     @PostMapping("/login")
-    public LoginResponse authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ResponseModel> authenticateUser(@RequestBody LoginRequest loginRequest) {
         // Xác thực từ username và password.
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
-        );
-
-        // Nếu không xảy ra exception tức là thông tin hợp lệ
-        // Set thông tin authentication vào Security Context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        // Trả về jwt cho người dùng.
-        String jwt = jwTtokenProvider.generateToken((CustomUserDetail) authentication.getPrincipal());
-        return new LoginResponse(jwt);
+        try{
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                    )
+            );
+            UserDTO userDTO = userMapper.toUserDTO(((CustomUserDetail)authentication.getPrincipal()).getUser());
+            // Nếu không xảy ra exception tức là thông tin hợp lệ
+            // Set thông tin authentication vào Security Context
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            // Trả về jwt cho người dùng.
+            String jwt = jwTtokenProvider.generateToken((CustomUserDetail) authentication.getPrincipal());
+            return ResponseEntity.ok().body(
+                    new ResponseModel(
+                            "ok",
+                            "Xác thực đăng nhâp thành công",
+                            new LoginResponse(jwt, userDTO)
+                    )
+            );
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseEntity.ok().body(
+                    new ResponseModel(
+                            "error",
+                            "Vui lòng kiểm tra lại email hoặc mật khẩu",
+                            ""
+                    )
+            );
+        }
     }
     @PostMapping("/register")
     ResponseEntity<ResponseModel> handleRegisterNewAccount(@RequestBody User insertUser){
         System.out.println("Get register request!!");
         Optional<User> new_user = Optional.ofNullable(userRepository.findByEmail(insertUser.getEmail()));
         if(new_user.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
+            return ResponseEntity.ok().body(
                     new ResponseModel(
                             "error",
-                            "Email has been used by another account",
+                            "Email đã được sử dụng bởi một tài khoản khác !!!",
                             ""
                     )
             );

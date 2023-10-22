@@ -1,19 +1,17 @@
 package com.example.backend.payload;
 
+import com.example.backend.dto.UserDTO;
 import lombok.Data;
-
-/**
- * Copyright 2019 {@author Loda} (https://loda.me).
- * This project is licensed under the MIT license.
- *
- * @since 5/1/2019
- * Github: https://github.com/loda-kun
- */
 @Data
 public class LoginResponse {
     private String accessToken;
     private String tokenType = "Bearer";
+    private UserDTO userDTO;
     public LoginResponse(String accessToken) {
         this.accessToken = accessToken;
+    }
+    public LoginResponse(String accessToken, UserDTO userDTO) {
+        this.accessToken = accessToken;
+        this.userDTO = userDTO;
     }
 }

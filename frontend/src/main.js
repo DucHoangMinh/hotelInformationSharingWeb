@@ -1,5 +1,6 @@
-import { createApp } from 'vue'
+import { createApp} from 'vue'
 import App from './App.vue'
+import store from "./store"
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -25,4 +26,5 @@ const app = createApp(App)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.use(router)
 app.use(vuetify)
+app.use(store)
 app.mount('#app')

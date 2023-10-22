@@ -1,5 +1,6 @@
 <template lang="pug">
 #header
+  navigation
   .header-block
     .header-block-content.pt-16
       v-label.text-white.text-h2.mb-6 Tìm kiếm phòng nghỉ dễ dàng
@@ -18,8 +19,10 @@
 <script>
 import {ref,onMounted,watch} from "vue";
 import axios from "axios";
+import Navigation from "@/utils/Navigation.vue";
 export default {
   name: "HomePage",
+  components: {Navigation},
   setup(){
     const totalProvinceData = ref([])
     const provinceList = ref([])
@@ -101,6 +104,7 @@ export default {
   width: 100%
   height: 300px
   position: relative
+  margin-top: $navigation-height
 .header-filter
   width: 80%
   position: absolute
@@ -121,4 +125,5 @@ v-select
   width: 80%
   margin: auto
   height: 100%
+  border-top: 1px solid #fff
 </style>

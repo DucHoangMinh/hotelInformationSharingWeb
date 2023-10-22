@@ -26,7 +26,7 @@ public class User {
     private String role;
     private Date dob;
     private Long phone;
-    private boolean sex;
+    private Boolean sex;
     public User() {
 
     }

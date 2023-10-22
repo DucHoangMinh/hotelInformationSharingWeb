@@ -51,7 +51,7 @@ public class SecurityConfiguration{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(antMatcher("/api/login"),antMatcher("/api/register"), antMatcher("/api/test")).permitAll()
+                        .requestMatchers(antMatcher("/api/login"),antMatcher("/api/register"),antMatcher("/api/check")).permitAll()
                         .requestMatchers(antMatcher("/api/v1/**")).authenticated())
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
