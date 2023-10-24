@@ -13,7 +13,7 @@
         v-label().pa-3.user-option-item
           font-awesome-icon(icon="fa-solid fa-user").mr-2
           |Quản lý tài khoản
-        v-label().pa-3.user-option-item
+        v-label(@click="logout").pa-3.user-option-item
           font-awesome-icon(icon="fa-solid fa-right-from-bracket").mr-2
           |Đăng xuất
 
@@ -21,7 +21,7 @@
 <script>
 import {ref} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-
+import storage from "@/services/storage";
 export default {
   name: "Navigation",
   components: {FontAwesomeIcon},
@@ -37,8 +37,14 @@ export default {
   },
   setup() {
     const userOptionState = ref(true);
+    const logout = async () => {
+      await storage.removeItem("accesstoken");
+      await storage.removeItem("user_info")
+      location.href = "/"
+    }
     return{
-      userOptionState
+      userOptionState,
+      logout
     }
   }
 }
@@ -60,14 +66,19 @@ export default {
 .logo-image
   height: 40px
 .navigation-user
-  cursor: pointer
+  cursor: pointer !important
+  height: 100%
+.navigation-user:hover .user-option
+  display: block !important
+
 .username
   cursor: pointer
 .user-option
   position: absolute
-  top: 40px
+  top: 60px
   background-color: #fff
   border-radius: 4px
+  display: none !important
 .user-option-item
   cursor: pointer
   border-radius: 4px
