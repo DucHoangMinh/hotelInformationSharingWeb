@@ -1,12 +1,14 @@
 package com.example.backend.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.backend.model.Hotel;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import lombok.*;
 
 import java.sql.Date;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -20,5 +22,9 @@ public class UserDTO{
     private Date dob;
     private Long phone;
     private boolean sex;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    private Collection<Hotel> hotels;
 }
 

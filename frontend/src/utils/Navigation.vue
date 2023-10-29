@@ -13,6 +13,9 @@
         v-label().pa-3.user-option-item
           font-awesome-icon(icon="fa-solid fa-user").mr-2
           |Quản lý tài khoản
+        v-label(@click="toHotelManagement()").pa-3.user-option-item
+          font-awesome-icon(icon="fa-solid fa-user").mr-2
+          |Quản lý khách sạn
         v-label(@click="logout").pa-3.user-option-item
           font-awesome-icon(icon="fa-solid fa-right-from-bracket").mr-2
           |Đăng xuất
@@ -22,6 +25,7 @@
 import {ref} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import storage from "@/services/storage";
+import router from "@/routes";
 export default {
   name: "Navigation",
   components: {FontAwesomeIcon},
@@ -42,8 +46,14 @@ export default {
       await storage.removeItem("user_info")
       location.href = "/"
     }
+    const toHotelManagement = () => {
+      const userId = JSON.parse(storage.getItem("user_info")).id
+      console.log(userId)
+      router.push(`/host/hotels?hostId=${userId}`)
+    }
     return{
       userOptionState,
+      toHotelManagement,
       logout
     }
   }

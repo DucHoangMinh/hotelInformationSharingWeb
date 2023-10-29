@@ -44,6 +44,7 @@ public class LoginController {
     }
     @PostMapping("/login")
     public ResponseEntity<ResponseModel> authenticateUser(@RequestBody LoginRequest loginRequest) {
+        System.out.println("Get login register");
         // Xác thực từ username và password.
         try{
             Authentication authentication = authenticationManager.authenticate(
