@@ -1,5 +1,8 @@
 import axios from "axios";
 const uri = "http://localhost:8080/api/"
+axios.create({
+    baseURL: 'http://localhost:8081'
+})
 const api = {
     get : async (url) => {
         const data = await axios.get(uri + url);

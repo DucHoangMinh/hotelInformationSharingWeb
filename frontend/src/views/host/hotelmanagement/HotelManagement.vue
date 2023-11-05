@@ -10,7 +10,9 @@ v-container(style="margin-top: 65px")
     v-window(v-model="tabs")
       v-window-item
       v-window-item
-        add-hotel
+        add-hotel(
+          @save-hotel-success="tabs = 0"
+        )
 
 </template>
 <script>
