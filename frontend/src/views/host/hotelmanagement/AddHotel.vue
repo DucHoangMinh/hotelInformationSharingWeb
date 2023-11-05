@@ -20,16 +20,16 @@
         v-text-field(variant="outlined" density="compact" type="time" v-model="hotel.closetime")
     .d-flex.align-center.pb-4
       v-label.v-col-2  Giá theo giờ
-      v-text-field(variant="outlined" density="compact" type="number" v-model="hotel.pricebyhour")
+      v-text-field(variant="outlined" density="compact" type="number" v-model="hotel.priceByHour")
     .d-flex.align-center.pb-4
       v-label.v-col-2  Giá theo ngày
-      v-text-field(variant="outlined" density="compact" type="number" v-model="hotel.pricebyday")
+      v-text-field(variant="outlined" density="compact" type="number" v-model="hotel.priceByDay")
     .d-flex.align-center.pb-4
       v-label.v-col-2  Giá qua đêm
-      v-text-field(variant="outlined" density="compact" type="number" v-model="hotel.priceovernight")
+      v-text-field(variant="outlined" density="compact" type="number" v-model="hotel.priceOverNight")
     .d-flex.align-center.pb-4
       v-label.v-col-2  Mã số kinh doanh
-      v-text-field(variant="outlined" density="compact" type="text" v-model="hotel.businesscode")
+      v-text-field(variant="outlined" density="compact" type="text" v-model="hotel.businessCode")
     .d-flex.align-start.pb-4
       v-label.v-col-2  Các tiện nghi khác
       v-textarea(variant="outlined" density="compact" rows="2" v-model="hotel.convenience")
@@ -49,8 +49,6 @@
     @cancel="handleCancelDialog"
     @confirm="handleConfirmDialog"
   )
-
-
 </template>
 <script>
 import {ref} from "vue";
@@ -59,24 +57,24 @@ import ConfirmDialog from "@/utils/ConfirmDialog.vue";
 import store from "@/store";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import firebaseService from "@/services/firebase";
-import api from "@/services/fixcorsapi";
+import api from "@/services/api";
 export default {
   name :"AddHotel",
   components: {FontAwesomeIcon, ConfirmDialog, ChooseLocation},
   setup(props,{emit}){
     const confirmDialogMessage = ref('');
     const confirmDialog = ref(false)
-    const hotel = ref({
+    let hotel = ref({
       hotelname : '',
       province: '',
       district: '',
       ward: '',
       opentime: '08:00',
       closetime: '22:00',
-      pricebyhour: 0,
-      pricebyday: 0,
-      priceovernight: 0,
-      businesscode: 0,
+      priceByHour: 0,
+      priceByDay: 0,
+      priceOverNight: 0,
+      businessCode: 0,
       convenience: '',
       // imageurl: ''
     })
@@ -137,11 +135,22 @@ export default {
         })
       }
     }
+    const reformatHotelValue = () => {
+      if(hotel.value.opentime.length < 6){
+        hotel.value.opentime += ':00'
+        hotel.value.closetime += ':00'
+      }
+      hotel.value.priceOverNight = parseInt(hotel.value.priceOverNight)
+      hotel.value.priceByHour = parseInt(hotel.value.priceByHour)
+      hotel.value.priceByDay = parseInt(hotel.value.priceByDay)
+      hotel.value.businessCode = parseInt(hotel.value.businessCode)
+    }
     const handleConfirmDialog = async () => {
+      reformatHotelValue()
       await uploadImageToFirebase()
       await api.post('http://localhost:8081/api/v1/hotel/', hotel.value);
       confirmDialog.value = false
-      // emit('save-hotel-success')
+      emit('save-hotel-success')
     }
     return {
       hotel,

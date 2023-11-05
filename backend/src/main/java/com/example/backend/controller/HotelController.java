@@ -1,7 +1,10 @@
 package com.example.backend.controller;
 
+import com.example.backend.mapper.UserMapper;
+import com.example.backend.model.CustomUserDetail;
 import com.example.backend.model.Hotel;
 import com.example.backend.model.ResponseModel;
+import com.example.backend.model.User;
 import com.example.backend.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +21,15 @@ public class HotelController {
 
     @Autowired
     HotelRepository hotelRepository;
-
+    @Autowired
+    UserMapper userMapper;
     @PreAuthorize("hasRole('ROLE_HOST')")
     @PostMapping("/")
     public ResponseEntity<ResponseModel> postHotel(@RequestBody Hotel newhotel, Authentication authentication){
         System.out.println("Get post hotel request");
-        System.out.println(authentication.getPrincipal());
+        System.out.println(newhotel.toString());
+        newhotel.setUser(((CustomUserDetail)authentication.getPrincipal()).getUser());
+        //Add hostid vao thong tin khach san
         Optional<Hotel> checkHotel = Optional.ofNullable(hotelRepository.findHotelByBusinessCode(newhotel.getBusinessCode()));
         if(checkHotel.isPresent()){
             return ResponseEntity.ok().body(
@@ -107,5 +113,16 @@ public class HotelController {
                     )
             );
         }
+    }
+
+    @GetMapping("/host/{hostid}")
+    public ResponseEntity<ResponseModel> getHotelByHostId(@PathVariable Long hostid){
+        return ResponseEntity.ok().body(
+                new ResponseModel(
+                        "ok",
+                        "Lấy danh sách khách sạn thành công",
+                        hotelRepository.findHotelsByUser_Id(hostid)
+                )
+        );
     }
 }
