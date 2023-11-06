@@ -1,8 +1,8 @@
 <template lang="pug">
-v-container.px-0(:class="{ 'd-flex' : isFlex}")
-  v-select.provinceSelect(label="Tỉnh/Thành phố" v-model="areaSelection.province" variant="outlined" density="compact" :items="provinceList").mr-2
-  v-select.provinceSelect(label="Quận/Huyện" v-model="areaSelection.distric" variant="outlined" density="compact" :items="districtList" no-data-text="Vui lòng chọn Tỉnh/Thành phố trước").mr-2
-  v-select.provinceSelect(label="Phường/Xã" v-model="areaSelection.ward" variant="outlined" density="compact" :items="wardList" no-data-text="Vui lòng chọn Quận/Huyện trước").mr-2
+v-container.px-0(:class="{ 'd-flex' : isFlex}").position-relative
+  v-select.v-col-4.provinceSelect(label="Tỉnh/Thành phố" v-model="areaSelection.province" variant="outlined" density="compact" :items="provinceList").mr-2
+  v-select.v-col-4.provinceSelect(label="Quận/Huyện" v-model="areaSelection.distric" variant="outlined" density="compact" :items="districtList" no-data-text="Vui lòng chọn Tỉnh/Thành phố trước").mr-2
+  v-select.v-col-4.provinceSelect(label="Phường/Xã" v-model="areaSelection.ward" variant="outlined" density="compact" :items="wardList" no-data-text="Vui lòng chọn Quận/Huyện trước").mr-2
 </template>
 <script>
 import {getCurrentInstance, onMounted, ref, watch} from "vue";
@@ -90,4 +90,8 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
+@import "src/sass/common"
+.provinceSelect
+  padding: 0
+  margin: 0
 </style>

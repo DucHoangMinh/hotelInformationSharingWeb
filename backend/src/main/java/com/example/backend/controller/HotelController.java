@@ -103,6 +103,8 @@ public class HotelController {
                 hotel1.setWard(hotel.getWard());
                 hotel1.setPriceByDay(hotel.getPriceByDay());
                 hotel1.setPriceByHour(hotel.getPriceByHour());
+                hotel1.setImageLinks(hotel.getImageLinks());
+                hotel1.setDetailLocation(hotel.getDetailLocation());
                 return hotelRepository.save(hotel1);
             });
             return ResponseEntity.ok().body(

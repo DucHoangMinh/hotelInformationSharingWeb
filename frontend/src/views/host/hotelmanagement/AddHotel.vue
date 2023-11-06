@@ -1,16 +1,20 @@
 <template lang="pug">
 .v-container
+  loader(v-if="loading")
   #input-form(style="width: 60%; margin: auto")
     .form-title.text-center.py-8
       v-label.text-h5 Nhập thông tin khách sạn của bạn
     .d-flex.align-center
       v-label.v-col-2 Tên khách sạn
       v-text-field(variant="outlined" density="compact" v-model="hotel.hotelname")
-    .d-flex.align-center
+    .d-flex.align-center.choose-location
       v-label.v-col-2 Địa chỉ
       choose-location(
         @choose-location="chooseHotelLocation"
       )
+    .d-flex.align-center.pb-4
+      v-label.v-col-2 Địa chỉ cụ thể
+      v-text-field(variant="outlined" density="compact" v-model="hotel.detailLocation")
     .d-flex.pb-4
       .d-flex.align-center.v-col-6.no-padding
         v-label.v-col-4 Giờ mở cửa
@@ -58,10 +62,12 @@ import store from "@/store";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import firebaseService from "@/services/firebase";
 import api from "@/services/api";
+import Loader from "@/utils/Loader.vue";
 export default {
   name :"AddHotel",
-  components: {FontAwesomeIcon, ConfirmDialog, ChooseLocation},
+  components: {Loader, FontAwesomeIcon, ConfirmDialog, ChooseLocation},
   setup(props,{emit}){
+    const loading = ref(false)
     const confirmDialogMessage = ref('');
     const confirmDialog = ref(false)
     let hotel = ref({
@@ -69,6 +75,7 @@ export default {
       province: '',
       district: '',
       ward: '',
+      detailLocation: '',
       opentime: '08:00',
       closetime: '22:00',
       priceByHour: 0,
@@ -76,7 +83,7 @@ export default {
       priceOverNight: 0,
       businessCode: 0,
       convenience: '',
-      // imageurl: ''
+      imageLinks: '_'
     })
     const imageUploadLinkList = ref([])
     const imageUpLoadList = ref([])
@@ -110,11 +117,13 @@ export default {
     }
     const uploadImageToFirebase = async () => {
       if(validateEnoughImage()){
+        imageUploadLinkList.value =[]
         for(let i = 0; i < imageUpLoadList.value.length; i++){
           let data = await firebaseService.upload(imageUpLoadList.value[i])
-          console.log(data)
+          imageUploadLinkList.value.push(data)
         }
       }
+      console.log(imageUploadLinkList.value)
     }
     const chooseHotelLocation = (location) => {
       hotel.value.province = location.province
@@ -144,12 +153,15 @@ export default {
       hotel.value.priceByHour = parseInt(hotel.value.priceByHour)
       hotel.value.priceByDay = parseInt(hotel.value.priceByDay)
       hotel.value.businessCode = parseInt(hotel.value.businessCode)
+      hotel.value.imageLinks = JSON.stringify(imageUploadLinkList.value)
     }
     const handleConfirmDialog = async () => {
-      reformatHotelValue()
+      loading.value = true
       await uploadImageToFirebase()
+      reformatHotelValue()
       await api.post('http://localhost:8081/api/v1/hotel/', hotel.value);
       confirmDialog.value = false
+      loading.value = false
       emit('save-hotel-success')
     }
     return {
@@ -163,7 +175,8 @@ export default {
       handleUploadImage,
       imageUploadLinkList,
       handleRemoveImage,
-      imageUpLoadList
+      imageUpLoadList,
+      loading
     }
   }
 
@@ -186,4 +199,6 @@ export default {
   cursor: pointer
 .remove-img-button:hover
   opacity: 0.7
+::v-deep .choose-location .v-container .v-input
+  margin: 0px !important
 </style>

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Time;
+import java.sql.Array;
 
 @Data
 @Builder
@@ -20,6 +21,7 @@ public class Hotel {
     private String province;
     private String district;
     private String ward;
+    private String detailLocation;
     private String convenience;
     private Time opentime; //Gio nhan khach vao
     private Time closetime; //Gio tra khach ra
@@ -27,7 +29,7 @@ public class Hotel {
     private Integer priceOverNight;
     private Integer priceByDay;
     private Long businessCode;
-
+    private String imageLinks;
     @ManyToOne
     @JoinColumn(name = "host_id")
     @EqualsAndHashCode.Exclude
