@@ -3,6 +3,7 @@ package com.example.backend.model;
 import com.example.backend.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import org.w3c.dom.Text;
 
 import java.sql.Time;
 import java.sql.Array;
@@ -29,6 +30,8 @@ public class Hotel {
     private Integer priceOverNight;
     private Integer priceByDay;
     private Long businessCode;
+    @Lob
+    @Column(name = "image_links", length = 512)
     private String imageLinks;
     @ManyToOne
     @JoinColumn(name = "host_id")
