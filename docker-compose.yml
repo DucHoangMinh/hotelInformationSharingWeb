@@ -13,5 +13,31 @@ services:
       - my-db:/var/ lib/mysql
     ports:
       - '2000:3306'
+  frontend:
+    build:
+      context: ./docker/frontend
+      dockerfile: Dockerfile
+    working_dir: /app/frontend
+    user: "1000:1000"
+    volumes:
+      - ./frontend:/app/web
+    ports:
+      - "8080:8080"
+    command: [ "npm", "run", "serve" ]
+  backend:
+    container_name: backend
+    build:
+      context: ./docker/backend
+      dockerfile: Dockerfile
+    volumes:
+      - './backend:/app/api'
+      - './api/build/libs/api-0.0.1-SNAPSHOT.jar:/app/api/build/libs/api-0.0.1-SNAPSHOT.jar'
+    ports:
+      - 1001:8080
+      - 1003:35729
+    depends_on:
+      - db
+    #    command: ['java', '-jar', 'build/libs/api-0.0.1-SNAPSHOT.jar']
+    command: [ './gradlew', 'bootRun' ]
 volumes:
     my-db:
