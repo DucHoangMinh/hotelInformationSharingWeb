@@ -9,6 +9,7 @@ v-container(style="margin-top: 65px")
         p Đăng một khách sạn mới
     v-window(v-model="tabs")
       v-window-item
+        hotel-list
       v-window-item
         add-hotel(
           @save-hotel-success="tabs = 0"
@@ -20,10 +21,11 @@ import Navigation from "@/utils/Navigation.vue";
 import {useRoute} from "vue-router";
 import {onMounted, ref} from "vue";
 import AddHotel from "@/views/host/hotelmanagement/AddHotel.vue";
+import HotelList from "@/views/host/hotelmanagement/HotelList.vue";
 
 export default {
   name: "Hotel Management",
-  components: {AddHotel, Navigation},
+  components: {HotelList, AddHotel, Navigation},
   setup(){
     const route = useRoute()
     const hostId = ref(null)

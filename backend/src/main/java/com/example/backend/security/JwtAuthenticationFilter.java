@@ -46,6 +46,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
+            else {
+                System.out.println("No jwt token found");
+            }
         } catch (Exception ex) {
             log.error("failed on set user authentication", ex);
         }

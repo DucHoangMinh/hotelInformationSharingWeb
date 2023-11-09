@@ -6,14 +6,14 @@
         img.logo-image(src="../assets/logo.png")
     .navigation-user.d-flex.align-center.position-relative
       .user-avatar.mr-2
-        img.user-avatar-image(:src="logourl")
+        img.user-avatar-image(src="https://www.tenforums.com/attachments/tutorials/146359d1501443008-change-default-account-picture-windows-10-a-user.png")
       .user-name
-        v-label.white-color.text-h6(:text="username")
+        v-label.white-color.text-h6(:text="userInfor.fullname")
       .user-option(v-if="userOptionState").black-color.d-flex.flex-column
         v-label().pa-3.user-option-item
           font-awesome-icon(icon="fa-solid fa-user").mr-2
           |Quản lý tài khoản
-        v-label(@click="toHotelManagement()").pa-3.user-option-item
+        v-label(@click="toHotelManagement()" v-if="userInfor.role == 'ROLE_HOST'" ).pa-3.user-option-item
           font-awesome-icon(icon="fa-solid fa-user").mr-2
           |Quản lý khách sạn
         v-label(@click="logout").pa-3.user-option-item
@@ -33,13 +33,10 @@ export default {
     logourl : {
       type: String,
       default: "../assets/userdefault.png"
-    },
-    username : {
-      type: String,
-      default: "Tài khoản người dùng"
     }
   },
   setup() {
+    const userInfor = ref(JSON.parse(storage.getItem("user_info")))
     const userOptionState = ref(true);
     const logout = async () => {
       await storage.removeItem("accesstoken");
@@ -54,7 +51,8 @@ export default {
     return{
       userOptionState,
       toHotelManagement,
-      logout
+      logout,
+      userInfor
     }
   }
 }
@@ -94,4 +92,6 @@ export default {
   border-radius: 4px
 .user-option-item:hover
   background-color: #ccc
+.user-avatar-image
+  height: 46px
 </style>

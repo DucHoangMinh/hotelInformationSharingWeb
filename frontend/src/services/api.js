@@ -4,10 +4,12 @@ let accesstoken = storage.getItem("accesstoken")
 let api = {};
 if(accesstoken == null){
     api = {get : async (url) => {
+        console.log('Get no token')
         const data = await fixcorsapi.get(url);
         return data.data;
     },
         post : async (url, body) => {
+        console.log("Get no token")
         console.log(accesstoken)
         const data = await fixcorsapi.post(url, body);
         return data.data;
@@ -21,9 +23,17 @@ else {
         }
     }
     api = {
+        get : async (url) => {
+            console.log('Get with token')
+            let data = await fixcorsapi.get( url, {
+                headers: {
+                    'Authorization': `Bearer ${accesstoken}`
+                }
+            });
+            return data.data;
+        },
         post : async (url, body) => {
-            console.log(accesstoken)
-            const data = await fixcorsapi.post( url, body, axiosConfig);
+            let data = await fixcorsapi.post( url, body, axiosConfig);
             return data.data;
         }
     }

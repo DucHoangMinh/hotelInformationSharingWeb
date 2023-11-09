@@ -1,17 +1,22 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.HotelDTO;
 import com.example.backend.mapper.UserMapper;
 import com.example.backend.model.CustomUserDetail;
 import com.example.backend.model.Hotel;
 import com.example.backend.model.ResponseModel;
 import com.example.backend.model.User;
 import com.example.backend.repository.HotelRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*")
@@ -23,6 +28,8 @@ public class HotelController {
     HotelRepository hotelRepository;
     @Autowired
     UserMapper userMapper;
+
+    ModelMapper modelMapper = new ModelMapper();
     @PreAuthorize("hasRole('ROLE_HOST')")
     @PostMapping("/")
     public ResponseEntity<ResponseModel> postHotel(@RequestBody Hotel newhotel, Authentication authentication){
@@ -116,14 +123,78 @@ public class HotelController {
             );
         }
     }
-
+    @PreAuthorize("hasRole('ROLE_HOST')")
     @GetMapping("/host/{hostid}")
     public ResponseEntity<ResponseModel> getHotelByHostId(@PathVariable Long hostid){
+        List<Hotel> hotels = hotelRepository.findHotelsByUser_Id(hostid);
+        List<HotelDTO> hotelDTOS =new ArrayList<HotelDTO>();
+        for(Hotel hotel : hotels){
+            HotelDTO hotelDTO = modelMapper.map(hotel, HotelDTO.class);
+            hotelDTOS.add(hotelDTO);
+        }
         return ResponseEntity.ok().body(
                 new ResponseModel(
                         "ok",
                         "Lấy danh sách khách sạn thành công",
-                        hotelRepository.findHotelsByUser_Id(hostid)
+                        hotelDTOS
+                )
+        );
+    }
+    @GetMapping("")
+    public ResponseEntity<ResponseModel> getHotelByLocation(@RequestParam String province, @RequestParam String district, @RequestParam String ward){
+        System.out.println(province + district + ward);
+        if(province == ""){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseModel(
+                            "error",
+                            "Thiếu trường dữ liệu",
+                            ""
+                    )
+            );
+        }else if(province != "" && district == ""){
+            return ResponseEntity.ok().body(
+                    new ResponseModel(
+                            "ok",
+                            "",
+                            hotelRepository.findHotelsByProvince(province)
+                    )
+            );
+        }
+        else if(province != "" && district != "" && ward == ""){
+            List<HotelDTO> hotels = new ArrayList<HotelDTO>();
+            for(Hotel hotel : hotelRepository.findHotelsByDistrict(district)){
+                if(hotel.getProvince().equals(province)){
+                    hotels.add(modelMapper.map(hotel, HotelDTO.class));
+                }
+            }
+            return ResponseEntity.ok().body(
+                    new ResponseModel(
+                            "ok",
+                            "",
+                            hotels
+                    )
+            );
+        }
+        else if(province != "" && district != "" && ward != ""){
+            List<HotelDTO> hotelDTOS = new ArrayList<HotelDTO>();
+            for(Hotel hotel : hotelRepository.findHotelsByWard(ward)){
+                if(hotel.getDistrict().equals(district) && hotel.getProvince().equals(province)){
+                    hotelDTOS.add(modelMapper.map(hotel, HotelDTO.class));
+                }
+            }
+            return ResponseEntity.ok().body(
+                    new ResponseModel(
+                            "ok",
+                            "",
+                            hotelDTOS
+                    )
+            );
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ResponseModel(
+                        "error",
+                        "Lỗi không xác định",
+                        ""
                 )
         );
     }

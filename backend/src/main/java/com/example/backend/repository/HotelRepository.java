@@ -12,4 +12,9 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     Hotel findHotelByBusinessCode(Long businessCode);
     void deleteById(Long id);
     List<Hotel> findHotelsByUser_Id(Long hostid);
+
+    List<Hotel> findHotelsByProvince(String province);
+    List<Hotel> findHotelsByDistrict(String district);
+
+    List<Hotel> findHotelsByWard(String ward);
 }

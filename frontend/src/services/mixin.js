@@ -5,6 +5,13 @@ const mixin = {
         const day = String(date.getDate()).padStart(2, '0');
 
         return `${year}-${month}-${day}`;
+    },
+    formatLinkLists: (string) => {
+        let result = string.split('"')
+        result.forEach((item, index) => {
+            if(item.length <= 1) result.splice(index,1)
+        })
+        return result
     }
 }
 export default mixin
