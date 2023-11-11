@@ -10,7 +10,7 @@
       v-select.provinceSelect(label="Tỉnh/Thành phố" v-model="areaSelection.province" variant="outlined" density="compact" :items="provinceList").mr-2
       v-select.provinceSelect(label="Quận/Huyện" v-model="areaSelection.distric" variant="outlined" density="compact" :items="districtList" no-data-text="Vui lòng chọn Tỉnh/Thành phố trước").mr-2
       v-select.provinceSelect(label="Phường/Xã" v-model="areaSelection.ward" variant="outlined" density="compact" :items="wardList" no-data-text="Vui lòng chọn Quận/Huyện trước").mr-2
-      v-btn(variant="outlined" size="large").filter-search-button Tìm kiếm
+      v-btn(variant="outlined" size="large" @click="handleSearchClick").filter-search-button Tìm kiếm
 #body
   .body-wrapper
     v-container
@@ -20,10 +20,12 @@
 import {ref,onMounted,watch} from "vue";
 import axios from "axios";
 import Navigation from "@/utils/Navigation.vue";
+import api from "@/services/api";
 export default {
   name: "HomePage",
   components: {Navigation},
   setup(){
+    const searchedProvince = ref([])
     const totalProvinceData = ref([])
     const provinceList = ref([])
     const districtList = ref([])
@@ -78,6 +80,15 @@ export default {
         }
       })
     })
+    const handleSearchClick = async () => {
+      try{
+        const data = await api.get(`api/v1/hotel?province=${areaSelection.value.province}&district=${areaSelection.value.distric}&ward=${areaSelection.value.ward}`)
+        searchedProvince.value = data.data
+      }
+      catch (error){
+        console.log(error)
+      }
+    }
     const setUpData = async () => {
       totalProvinceData.value = await getProviceList()
       provinceDataDivision()
@@ -92,7 +103,9 @@ export default {
       provinceList,
       districtList,
       areaSelection,
-      wardList
+      wardList,
+      handleSearchClick,
+      searchedProvince
     }
   }
 }
