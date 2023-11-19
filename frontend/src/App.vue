@@ -2,6 +2,7 @@
   <v-app>
     <SnackBar></SnackBar>
     <router-view></router-view>
+    <Footer></Footer>
   </v-app>
 </template>
 
@@ -11,10 +12,11 @@ import SnackBar from "@/utils/SnackBar.vue";
 import storage from "@/services/storage";
 import {onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
+import Footer from "@/utils/Footer.vue";
 
 export default {
   name: 'App',
-  components: {SnackBar},
+  components: {Footer, SnackBar},
   computed: {
     ...mapState(["snackbar"])
   },
@@ -52,5 +54,11 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+::v-deep .footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
 }
 </style>

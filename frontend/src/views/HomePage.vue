@@ -32,9 +32,9 @@ export default {
     const wardList = ref([])
     //Ghi lại giá trị các lựa chọn tỉnh/huyện/xã trong cái select
     const areaSelection = ref({
-      province: null,
-      distric: null,
-      ward: null
+      province: "",
+      distric: "",
+      ward: ""
     })
     //Ghi lại index của các tỉnh, huyện, xã đã chọn trong cái mảng tổng
     const areaIndexSelection = ref({
@@ -57,8 +57,8 @@ export default {
     watch(() => areaSelection.value.province, ()=> {
       districtList.value = []
       wardList.value = []
-      areaSelection.value.distric = null
-      areaSelection.value.ward = null
+      areaSelection.value.distric = ""
+      areaSelection.value.ward = ""
       totalProvinceData.value.forEach((item,index) => {
         if(item.name == areaSelection.value.province){
           areaIndexSelection.value.provinceIndex = index
@@ -70,7 +70,7 @@ export default {
     })
     watch(() => areaSelection.value.distric, () =>{
       wardList.value = []
-      areaSelection.value.ward = null
+      areaSelection.value.ward = ""
       let currentDistrictList = totalProvinceData.value[areaIndexSelection.value.provinceIndex].districts
       currentDistrictList.forEach(item => {
         if(item.name == areaSelection.value.distric){
@@ -84,6 +84,7 @@ export default {
       try{
         const data = await api.get(`api/v1/hotel?province=${areaSelection.value.province}&district=${areaSelection.value.distric}&ward=${areaSelection.value.ward}`)
         searchedProvince.value = data.data
+        console.log(data)
       }
       catch (error){
         console.log(error)

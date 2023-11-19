@@ -159,7 +159,7 @@ export default {
       loading.value = true
       await uploadImageToFirebase()
       reformatHotelValue()
-      await api.post('http://localhost:8081/api/v1/hotel/', hotel.value);
+      await api.post('http://localhost:8080/api/v1/hotel/', hotel.value);
       confirmDialog.value = false
       loading.value = false
       emit('save-hotel-success')
