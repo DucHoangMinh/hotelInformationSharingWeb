@@ -143,7 +143,10 @@ public class HotelController {
     @GetMapping("")
     public ResponseEntity<ResponseModel> getHotelByLocation(@RequestParam String province, @RequestParam String district, @RequestParam String ward){
         System.out.println(province + district + ward);
-        if(province == ""){
+        System.out.println(province.equals(""));
+        System.out.println(district.equals(""));
+        System.out.println(ward.equals(""));
+        if(province.equals("")){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseModel(
                             "error",
@@ -151,7 +154,8 @@ public class HotelController {
                             ""
                     )
             );
-        }else if(province != "" && district == ""){
+        }else if(!province.equals("") && district.equals("")){
+            System.out.println("1");
             return ResponseEntity.ok().body(
                     new ResponseModel(
                             "ok",
@@ -160,7 +164,8 @@ public class HotelController {
                     )
             );
         }
-        else if(province != "" && district != "" && ward == ""){
+        else if(!province.equals("") && !district.equals("") && ward.equals("")){
+            System.out.println("2");
             List<HotelDTO> hotels = new ArrayList<HotelDTO>();
             for(Hotel hotel : hotelRepository.findHotelsByDistrict(district)){
                 if(hotel.getProvince().equals(province)){
@@ -175,7 +180,8 @@ public class HotelController {
                     )
             );
         }
-        else if(province != "" && district != "" && ward != ""){
+        else if(!province.equals("") && !district.equals("") && !ward.equals("")){
+            System.out.println("3");
             List<HotelDTO> hotelDTOS = new ArrayList<HotelDTO>();
             for(Hotel hotel : hotelRepository.findHotelsByWard(ward)){
                 if(hotel.getDistrict().equals(district) && hotel.getProvince().equals(province)){

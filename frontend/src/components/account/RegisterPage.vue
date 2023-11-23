@@ -81,7 +81,7 @@ export default {
     }
     async function handleClickRegister(){
       registerRequest.value.dob = mixin.formatDateToYYYYMMDD(registerRequest.value.dob);
-      const registerResponse = await api.post('register', registerRequest.value)
+      const registerResponse = await api.post('api/register', registerRequest.value)
       if(registerResponse.status === 'ok'){
         store.dispatch('showSnack', {
           message: 'Đăng ký thành công, bạn sẽ được chuyển về trang đăng nhập sau 5 giây',
