@@ -9,10 +9,13 @@ v-container(style="margin-top: 65px")
         p Đăng một khách sạn mới
     v-window(v-model="tabs")
       v-window-item
-        hotel-list
+        hotel-list(
+          v-if="!tabs"
+        )
       v-window-item
         add-hotel(
-          @save-hotel-success="tabs = 0"
+          v-if="tabs"
+          @save-hotel-success="toHotelList"
         )
 
 </template>
@@ -30,12 +33,16 @@ export default {
     const route = useRoute()
     const hostId = ref(null)
     const tabs = ref(null)
+    const toHotelList = async () => {
+      tabs.value = 0
+    }
     const init = () => {
       hostId.value = route.query.hostId
     }
     onMounted(init)
     return {
-      tabs
+      tabs,
+      toHotelList
     }
   }
 }

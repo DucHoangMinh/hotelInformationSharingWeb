@@ -162,6 +162,21 @@ export default {
       await api.post('http://localhost:8080/api/v1/hotel/', hotel.value);
       confirmDialog.value = false
       loading.value = false
+      hotel.value = {
+        hotelname : '',
+        province: '',
+        district: '',
+        ward: '',
+        detailLocation: '',
+        opentime: '08:00',
+        closetime: '22:00',
+        priceByHour: 0,
+        priceByDay: 0,
+        priceOverNight: 0,
+        businessCode: 0,
+        convenience: '',
+        imageLinks: '_'
+      }
       emit('save-hotel-success')
     }
     return {
