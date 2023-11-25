@@ -6,14 +6,20 @@
       v-label.text-white.text-h2.mb-6 Tìm kiếm phòng nghỉ dễ dàng
       br
       v-label.text-white.text-h4 Du lịch tự tin, không còn lo về nơi ở...
-    .header-filter.d-flex.pa-4
+    .header-filter.d-flex.pa-4.align-center
       v-select.provinceSelect(label="Tỉnh/Thành phố" v-model="areaSelection.province" variant="outlined" density="compact" :items="provinceList").mr-2
       v-select.provinceSelect(label="Quận/Huyện" v-model="areaSelection.distric" variant="outlined" density="compact" :items="districtList" no-data-text="Vui lòng chọn Tỉnh/Thành phố trước").mr-2
       v-select.provinceSelect(label="Phường/Xã" v-model="areaSelection.ward" variant="outlined" density="compact" :items="wardList" no-data-text="Vui lòng chọn Quận/Huyện trước").mr-2
+      v-btn.mr-2(variant="text" @click="resetAreaSelection")
+        font-awesome-icon.text-h5(icon="fa-solid fa-xmark" )
       v-btn(variant="outlined" size="large" @click="handleSearchClick").filter-search-button Tìm kiếm
 #body
   .body-wrapper
-    v-container
+    v-container.pt-16
+    .hotel-search-result(v-if="searchedHotel.length > 0" )
+      sum-hotel-list(
+        :list="searchedHotel"
+      )
 
 </template>
 <script>
@@ -21,11 +27,15 @@ import {ref,onMounted,watch} from "vue";
 import axios from "axios";
 import Navigation from "@/utils/Navigation.vue";
 import api from "@/services/api";
+import HotelList from "@/views/host/hotelmanagement/HotelList.vue";
+import SumHotelList from "@/utils/SumHotelList.vue";
+import mixin from "@/services/mixin";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 export default {
   name: "HomePage",
-  components: {Navigation},
+  components: {FontAwesomeIcon, SumHotelList, HotelList, Navigation},
   setup(){
-    const searchedProvince = ref([])
+    const searchedHotel = ref([])
     const totalProvinceData = ref([])
     const provinceList = ref([])
     const districtList = ref([])
@@ -42,6 +52,19 @@ export default {
       districtIndex: null,
       wardIndex: null
     })
+    const resetAreaSelection = () => {
+      areaSelection.value = {
+        province: "",
+        distric: "",
+        ward: ""
+      }
+      areaIndexSelection.value = {
+        provinceIndex: null,
+        districtIndex: null,
+        wardIndex: null
+      }
+      searchedHotel.value = []
+    }
     const getProviceList = async () => {
       let getData = await axios.get('https://provinces.open-api.vn/api/?depth=3')
       return getData.data;
@@ -82,9 +105,11 @@ export default {
     })
     const handleSearchClick = async () => {
       try{
-        const data = await api.get(`api/v1/hotel?province=${areaSelection.value.province}&district=${areaSelection.value.distric}&ward=${areaSelection.value.ward}`)
-        searchedProvince.value = data.data
-        console.log(data)
+        const { data }= await api.get(`api/v1/hotel?province=${areaSelection.value.province}&district=${areaSelection.value.distric}&ward=${areaSelection.value.ward}`)
+        searchedHotel.value = data
+        searchedHotel.value.forEach((item, index) => {
+          searchedHotel.value[index].imageLinks = mixin.formatLinkLists(item.imageLinks)
+        })
       }
       catch (error){
         console.log(error)
@@ -106,7 +131,8 @@ export default {
       areaSelection,
       wardList,
       handleSearchClick,
-      searchedProvince
+      searchedHotel,
+      resetAreaSelection
     }
   }
 }
@@ -140,4 +166,11 @@ v-select
   margin: auto
   height: 100%
   border-top: 1px solid #fff
+.hotel-search-result
+  width: 80%
+  margin: auto
+  max-height: 400px
+  overflow-y: scroll
+  border: 1px solid $matisse-color
+  border-radius: 4px
 </style>
