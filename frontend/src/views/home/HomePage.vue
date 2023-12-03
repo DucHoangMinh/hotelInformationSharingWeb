@@ -20,6 +20,7 @@
       sum-hotel-list(
         :list="searchedHotel"
       )
+    trending-destination
 
 </template>
 <script>
@@ -31,9 +32,10 @@ import HotelList from "@/views/host/hotelmanagement/HotelList.vue";
 import SumHotelList from "@/utils/SumHotelList.vue";
 import mixin from "@/services/mixin";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import TrendingDestination from "@/views/home/TrendingDestination.vue";
 export default {
   name: "HomePage",
-  components: {FontAwesomeIcon, SumHotelList, HotelList, Navigation},
+  components: {TrendingDestination, FontAwesomeIcon, SumHotelList, HotelList, Navigation},
   setup(){
     const searchedHotel = ref([])
     const totalProvinceData = ref([])
@@ -138,7 +140,7 @@ export default {
 }
 </script>
 <style scoped lang="sass">
-@import "src/sass/common"
+@import "../../sass/common"
 .header-block
   background-color: $matisse-color
   width: 100%
@@ -173,4 +175,8 @@ v-select
   overflow-y: scroll
   border: 1px solid $matisse-color
   border-radius: 4px
+::v-deep .destination-wrapper
+  width: 81%
+  margin: auto
+  margin-bottom: 40px
 </style>

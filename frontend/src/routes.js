@@ -1,6 +1,6 @@
 import LoginPage from "@/components/account/LoginPage.vue";
 import WelcomPage from "@/components/WelcomePage.vue";
-import HomePage from "@/views/HomePage.vue";
+import HomePage from "@/views/home/HomePage.vue";
 import RegisterPage from "@/components/account/RegisterPage.vue";
 import NotPermitted from "@/components/NotPermitted.vue";
 import HotelManagement from "@/views/host/hotelmanagement/HotelManagement.vue";
