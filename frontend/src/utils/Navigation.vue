@@ -10,7 +10,7 @@
       .user-name
         v-label.white-color.text-h6(:text="userInfor.fullname")
       .user-option(v-if="userOptionState").black-color.d-flex.flex-column
-        v-label().pa-3.user-option-item
+        v-label(@click="toUserSetting").pa-3.user-option-item
           font-awesome-icon(icon="fa-solid fa-user").mr-2
           |Quản lý tài khoản
         v-label(@click="toHotelManagement()" v-if="userInfor.role == 'ROLE_HOST'" ).pa-3.user-option-item
@@ -48,11 +48,15 @@ export default {
       console.log(userId)
       router.push(`/host/hotels?hostId=${userId}`)
     }
+    const toUserSetting = () => {
+      router.push(`/setting`)
+    }
     return{
       userOptionState,
       toHotelManagement,
       logout,
-      userInfor
+      userInfor,
+      toUserSetting
     }
   }
 }

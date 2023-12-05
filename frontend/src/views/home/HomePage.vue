@@ -79,31 +79,37 @@ export default {
     const testFunctions = () => {
       console.log("Test okay")
     }
-    watch(() => areaSelection.value.province, ()=> {
-      districtList.value = []
-      wardList.value = []
-      areaSelection.value.distric = ""
-      areaSelection.value.ward = ""
-      totalProvinceData.value.forEach((item,index) => {
-        if(item.name == areaSelection.value.province){
-          areaIndexSelection.value.provinceIndex = index
-          item.districts.forEach(district => {
-            districtList.value.push(district.name);
-          })
-        }
-      })
+    watch(() => areaSelection.value.province, (after,before)=> {
+      console.log(before)
+      if(after !== ""){
+        districtList.value = []
+        wardList.value = []
+        areaSelection.value.distric = ""
+        areaSelection.value.ward = ""
+        totalProvinceData.value.forEach((item,index) => {
+          if(item.name == areaSelection.value.province){
+            areaIndexSelection.value.provinceIndex = index
+            item.districts.forEach(district => {
+              districtList.value.push(district.name);
+            })
+          }
+        })
+      }
     })
-    watch(() => areaSelection.value.distric, () =>{
-      wardList.value = []
-      areaSelection.value.ward = ""
-      let currentDistrictList = totalProvinceData.value[areaIndexSelection.value.provinceIndex].districts
-      currentDistrictList.forEach(item => {
-        if(item.name == areaSelection.value.distric){
-          item.wards.forEach(item => {
-            wardList.value.push(item.name)
-          })
-        }
-      })
+    watch(() => areaSelection.value.distric, (after,before) =>{
+      console.log(before)
+      if(after !== ""){
+        wardList.value = []
+        areaSelection.value.ward = ""
+        let currentDistrictList = totalProvinceData.value[areaIndexSelection.value.provinceIndex].districts
+        currentDistrictList.forEach(item => {
+          if(item.name == areaSelection.value.distric){
+            item.wards.forEach(item => {
+              wardList.value.push(item.name)
+            })
+          }
+        })
+      }
     })
     const handleSearchClick = async () => {
       try{

@@ -49,7 +49,7 @@ export default {
       totalProvinceData.value.forEach((item,index) => {
         if(item.name == areaSelection.value.province){
           areaIndexSelection.value.provinceIndex = index
-          item.districts.forEach(district => {
+          item.district.forEach(district => {
             districtList.value.push(district.name);
           })
         }
@@ -59,7 +59,7 @@ export default {
     watch(() => areaSelection.value.distric, () =>{
       wardList.value = []
       areaSelection.value.ward = null
-      let currentDistrictList = totalProvinceData.value[areaIndexSelection.value.provinceIndex].districts
+      let currentDistrictList = totalProvinceData.value[areaIndexSelection.value.provinceIndex].district
       currentDistrictList.forEach(item => {
         if(item.name == areaSelection.value.distric){
           item.wards.forEach(item => {
