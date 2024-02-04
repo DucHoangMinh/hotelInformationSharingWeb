@@ -22,10 +22,12 @@
 
 </template>
 <script>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import storage from "@/services/storage";
 import router from "@/routes";
+import api from "@/services/api";
+import mixin from "@/services/mixin";
 export default {
   name: "Navigation",
   components: {FontAwesomeIcon},
@@ -36,13 +38,25 @@ export default {
     }
   },
   setup() {
-    const userInfor = ref(JSON.parse(storage.getItem("user_info")))
+    const userInfor = ref({})
     const userOptionState = ref(true);
+    const userId =ref(JSON.parse(storage.getItem('user_info')).id)
     const logout = async () => {
       await storage.removeItem("accesstoken");
       await storage.removeItem("user_info")
       location.href = "/"
     }
+
+    const getUserInfor = async () => {
+      try {
+        const { data } = await api.get(`api/v1/user/${userId.value}`)
+        userInfor.value = data
+      } catch (error){
+        mixin.showErrorMessage(error)
+      }
+    }
+
+    onMounted(getUserInfor)
     const toHotelManagement = () => {
       const userId = JSON.parse(storage.getItem("user_info")).id
       console.log(userId)

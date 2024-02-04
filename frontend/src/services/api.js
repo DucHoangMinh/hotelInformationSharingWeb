@@ -35,6 +35,10 @@ else {
         post : async (url, body) => {
             let data = await fixcorsapi.post( url, body, axiosConfig);
             return data.data;
+        },
+        put : async (url, body) => {
+            let data = await fixcorsapi.put(url, body, axiosConfig)
+            return data.data
         }
     }
 }

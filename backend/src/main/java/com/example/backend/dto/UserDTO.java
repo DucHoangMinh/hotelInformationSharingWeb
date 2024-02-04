@@ -21,7 +21,7 @@ public class UserDTO{
     private String role;
     private Date dob;
     private Long phone;
-    private boolean sex;
+    private Boolean sex;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude

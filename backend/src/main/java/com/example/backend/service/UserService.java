@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.UserDTO;
 import com.example.backend.exception.UserException;
 import com.example.backend.model.CustomUserDetail;
 import com.example.backend.model.User;
@@ -32,4 +33,11 @@ public class UserService implements UserDetailsService {
         User user = userOptional.get();
         return new CustomUserDetail(user);
     }
+
+//    public UserDTO putUserById(Long id, UserDTO userDTO){
+//        Optional<User> user = userRepository.findById(id);
+//        if(!user.isPresent()){
+//            throw Exception
+//        }
+//    }
 }

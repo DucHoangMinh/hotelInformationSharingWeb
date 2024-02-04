@@ -5,7 +5,6 @@ import com.example.backend.mapper.UserMapper;
 import com.example.backend.model.CustomUserDetail;
 import com.example.backend.model.Hotel;
 import com.example.backend.model.ResponseModel;
-import com.example.backend.model.User;
 import com.example.backend.repository.HotelRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,3 +1,5 @@
+import store from "@/store";
+
 const mixin = {
     formatDateToYYYYMMDD: (date) => {
         const year = date.getFullYear();
@@ -12,6 +14,29 @@ const mixin = {
             if(item.length <= 1) result.splice(index,1)
         })
         return result
+    },
+    showSuccessMessage: (message) => {
+        store.dispatch('showSnack', {
+            message: message,
+            color: 'green'
+        })
+    },
+    showWarningMessage: (message) => {
+        store.dispatch('showSnack', {
+            message: message,
+            color: 'yellow'
+        })
+    },
+    showErrorMessage: (message) => {
+        store.dispatch('showSnack', {
+            message: message,
+            color: 'red'
+        })
+    },
+    password: {
+        validate: (password) => {
+            return password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"/)
+        }
     }
 }
 export default mixin

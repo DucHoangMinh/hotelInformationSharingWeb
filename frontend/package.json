@@ -17,6 +17,7 @@
     "axios": "^1.5.1",
     "cookie-storage": "^6.1.0",
     "core-js": "^3.8.3",
+    "dotenv": "^16.4.1",
     "firebase": "^10.5.2",
     "fs": "^0.0.1-security",
     "glob": "^10.3.10",
