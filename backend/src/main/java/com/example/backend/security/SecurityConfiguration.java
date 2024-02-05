@@ -56,7 +56,7 @@ public class SecurityConfiguration{
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(antMatcher(HttpMethod.OPTIONS, "/**")).permitAll()
-                        .requestMatchers(antMatcher("/api/login"),antMatcher("/api/register"),antMatcher("/api/check")).permitAll()
+                        .requestMatchers(antMatcher("/api/login"),antMatcher("/api/register"),antMatcher("/api/check"),antMatcher("/api/check_token")).permitAll()
                         .requestMatchers(antMatcher("/api/v1/**")).authenticated())
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();

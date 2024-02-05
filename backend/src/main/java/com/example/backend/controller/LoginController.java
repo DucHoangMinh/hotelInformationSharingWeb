@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.UserDTO;
 import com.example.backend.mapper.UserMapper;
+import com.example.backend.model.CheckToken;
 import com.example.backend.model.CustomUserDetail;
 import com.example.backend.model.ResponseModel;
 import com.example.backend.model.User;
@@ -42,6 +43,30 @@ public class LoginController {
         System.out.println("Receive check request");
         return "testApiSuccessfully";
     }
+
+    @PostMapping("/check_token")
+    public ResponseEntity<ResponseModel> checkToken(@RequestBody CheckToken checkToken){
+        System.out.println(checkToken.getToken());
+        Boolean check = jwTtokenProvider.validateToken(checkToken.getToken());
+        System.out.println(check);
+        if(!check){
+            return ResponseEntity.badRequest().body(
+                    new ResponseModel(
+                            "false",
+                            "Token is invalid",
+                            ""
+                    )
+            );
+        }
+        return ResponseEntity.ok().body(
+                new ResponseModel(
+                        "ok",
+                        "Token is valid",
+                        ""
+                )
+        );
+    }
+
     @PostMapping("/login")
     public ResponseEntity<ResponseModel> authenticateUser(@RequestBody LoginRequest loginRequest) {
         System.out.println("Get login register");

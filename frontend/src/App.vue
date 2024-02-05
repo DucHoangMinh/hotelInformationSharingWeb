@@ -13,6 +13,8 @@ import storage from "@/services/storage";
 import {onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
 import Footer from "@/utils/Footer.vue";
+import api from "@/services/api";
+import mixin from "@/services/mixin";
 
 export default {
   name: 'App',
@@ -23,19 +25,34 @@ export default {
   setup(){
     const router = useRouter()
     const noNeedCheckPath = ref(['/', '/login', '/register'])
-    const checkLoginOrNot = () => {
+    const checkTokenAvailable = async (token) => {
+      console.log(location.href)
+      if(location.href !== "/"){
+        try {
+          const send_data = {
+            token : token
+          }
+          const { data } = await api.post("api/check_token",send_data)
+          console.log(data)
+        } catch (error){
+          await mixin.logout()
+        }
+      }
+    }
+    const checkLoginOrNot = async () => {
       const currentPath = router.currentRoute.value.path;
       console.log(currentPath)
       let needCheckOrNot = noNeedCheckPath.value.find(item => {
-        item == currentPath
+        item === currentPath
       })
       if(!needCheckOrNot){
         let token = storage.getItem("accesstoken");
         if(token){
-          router.push('/home')
+          await checkTokenAvailable(token.replace(/"/g, ''))
+          await router.push('/home')
         }
         else{
-          router.push('/')
+          await router.push('/')
         }
       }
     }

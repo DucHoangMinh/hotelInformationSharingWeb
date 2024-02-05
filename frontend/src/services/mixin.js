@@ -1,4 +1,5 @@
 import store from "@/store";
+import storage from "@/services/storage";
 
 const mixin = {
     formatDateToYYYYMMDD: (date) => {
@@ -37,6 +38,11 @@ const mixin = {
         validate: (password) => {
             return password.match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"/)
         }
+    },
+    logout: async () => {
+            await storage.removeItem("accesstoken");
+            await storage.removeItem("user_info")
+            location.href = "/"
     }
 }
 export default mixin
