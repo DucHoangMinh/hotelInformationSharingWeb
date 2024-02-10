@@ -7,9 +7,9 @@
       br
       v-label.text-white.text-h4 Du lịch tự tin, không còn lo về nơi ở...
     .header-filter.d-flex.pa-4.align-center
-      v-select.provinceSelect(label="Tỉnh/Thành phố" v-model="areaSelection.province" variant="outlined" density="compact" :items="provinceList").mr-2
-      v-select.provinceSelect(label="Quận/Huyện" v-model="areaSelection.distric" variant="outlined" density="compact" :items="districtList" no-data-text="Vui lòng chọn Tỉnh/Thành phố trước").mr-2
-      v-select.provinceSelect(label="Phường/Xã" v-model="areaSelection.ward" variant="outlined" density="compact" :items="wardList" no-data-text="Vui lòng chọn Quận/Huyện trước").mr-2
+      choose-location(
+        @choose-location="selectArea"
+      )
       v-btn.mr-2(variant="text" @click="resetAreaSelection")
         font-awesome-icon.text-h5(icon="fa-solid fa-xmark" )
       v-btn(variant="outlined" size="large" @click="handleSearchClick").filter-search-button Tìm kiếm
@@ -24,8 +24,7 @@
 
 </template>
 <script>
-import {ref,onMounted,watch} from "vue";
-import axios from "axios";
+import {ref,onMounted} from "vue";
 import Navigation from "@/utils/Navigation.vue";
 import api from "@/services/api";
 import HotelList from "@/views/host/hotelmanagement/HotelList.vue";
@@ -33,9 +32,10 @@ import SumHotelList from "@/utils/SumHotelList.vue";
 import mixin from "@/services/mixin";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import TrendingDestination from "@/views/home/TrendingDestination.vue";
+import ChooseLocation from "@/utils/ChooseLocation.vue";
 export default {
   name: "HomePage",
-  components: {TrendingDestination, FontAwesomeIcon, SumHotelList, HotelList, Navigation},
+  components: {ChooseLocation, TrendingDestination, FontAwesomeIcon, SumHotelList, HotelList, Navigation},
   setup(){
     const searchedHotel = ref([])
     const totalProvinceData = ref([])
@@ -48,6 +48,7 @@ export default {
       distric: "",
       ward: ""
     })
+
     //Ghi lại index của các tỉnh, huyện, xã đã chọn trong cái mảng tổng
     const areaIndexSelection = ref({
       provinceIndex: null,
@@ -67,55 +68,21 @@ export default {
       }
       searchedHotel.value = []
     }
-    const getProviceList = async () => {
-      let getData = await axios.get('https://provinces.open-api.vn/api/?depth=3')
-      return getData.data;
-    }
-    const provinceDataDivision = () => {
-      totalProvinceData.value.forEach((item) => {
-        provinceList.value.push(item.name)
-      })
-    }
+
     const testFunctions = () => {
       console.log("Test okay")
     }
-    watch(() => areaSelection.value.province, (after,before)=> {
-      console.log(before)
-      if(after !== ""){
-        districtList.value = []
-        wardList.value = []
-        areaSelection.value.distric = ""
-        areaSelection.value.ward = ""
-        totalProvinceData.value.forEach((item,index) => {
-          if(item.name == areaSelection.value.province){
-            areaIndexSelection.value.provinceIndex = index
-            item.districts.forEach(district => {
-              districtList.value.push(district.name);
-            })
-          }
-        })
-      }
-    })
-    watch(() => areaSelection.value.distric, (after,before) =>{
-      console.log(before)
-      if(after !== ""){
-        wardList.value = []
-        areaSelection.value.ward = ""
-        let currentDistrictList = totalProvinceData.value[areaIndexSelection.value.provinceIndex].districts
-        currentDistrictList.forEach(item => {
-          if(item.name == areaSelection.value.distric){
-            item.wards.forEach(item => {
-              wardList.value.push(item.name)
-            })
-          }
-        })
-      }
-    })
+    const selectArea = (selection) => {
+      areaSelection.value.province = selection.province
+      areaSelection.value.distric = selection.distric
+      areaSelection.value.ward = selection.ward
+    }
+
     const handleSearchClick = async () => {
       try{
         const { data }= await api.get(`api/v1/hotel?province=${areaSelection.value.province}&district=${areaSelection.value.distric}&ward=${areaSelection.value.ward}`)
         searchedHotel.value = data
-        searchedHotel.value.forEach((item, index) => {
+        searchedHotel.value?.forEach((item, index) => {
           searchedHotel.value[index].imageLinks = mixin.formatLinkLists(item.imageLinks)
         })
       }
@@ -124,8 +91,6 @@ export default {
       }
     }
     const setUpData = async () => {
-      totalProvinceData.value = await getProviceList()
-      provinceDataDivision()
     }
     onMounted(() => {
       setUpData()
@@ -140,7 +105,8 @@ export default {
       wardList,
       handleSearchClick,
       searchedHotel,
-      resetAreaSelection
+      resetAreaSelection,
+      selectArea
     }
   }
 }

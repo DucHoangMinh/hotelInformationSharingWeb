@@ -38,3 +38,5 @@ export const HOME_DESTINATION = [
         ward: null
     }
 ]
+
+export const PROVINCES_API_URL = process.env.VUE_APP_PROVINCES_API

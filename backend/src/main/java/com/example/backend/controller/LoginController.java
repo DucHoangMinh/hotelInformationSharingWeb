@@ -45,7 +45,7 @@ public class LoginController {
     }
 
     @PostMapping("/check_token")
-    public ResponseEntity<ResponseModel> checkToken(@RequestBody CheckToken checkToken){
+    public ResponseEntity<ResponseModel> checkToken(@   RequestBody CheckToken checkToken){
         System.out.println(checkToken.getToken());
         Boolean check = jwTtokenProvider.validateToken(checkToken.getToken());
         System.out.println(check);
